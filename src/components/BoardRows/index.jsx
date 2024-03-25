@@ -16,6 +16,7 @@ const BoardRows = ({ onPlay, isNext, squares, winningLine, winner }) => {
             const isWinningSquare = winningSquares && winningSquares.includes(i)
             rowSquares.push(
                 <Square
+                    key={`square-${i}`}
                     value={squares[i]}
                     onSquareClick={() => handleClick(i)}
                     isWinningSquare={isWinningSquare}

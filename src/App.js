@@ -1,7 +1,7 @@
 import { useState } from "react"
 import Board from "./components/Board"
-import { calculateWinner } from "./utils/calculate-winner"
-import { getSquareCoordinates } from "./utils/get-square-coordinates"
+import Moves from "./components/Moves"
+import ToggleSortButton from "./components/ToggleSortButton"
 
 const App = () => {
     const [history, setHistory] = useState([Array(9).fill(null)])
@@ -28,33 +28,6 @@ const App = () => {
 
     const sortedHistory = sortAscending ? [...history] : [...history].reverse()
 
-    const Moves = sortedHistory.map((squares, move) => {
-        const moveOrder = sortAscending ? move : history.length - 1 - move
-        let description
-        let winner = calculateWinner(squares)
-
-        if (moveOrder) {
-            if (moveOrder + 1 === history.length) {
-                const { row, column } = getSquareCoordinates(lastMove)
-                description = `You are at move #${moveOrder}. ${!xIsNext ? "X" : "O"} placed on Row: ${row} Column: ${column}`
-                if (winner.symbol) {
-                    description += " WINNER: " + winner.symbol
-                } else if (moveOrder === 9) {
-                    description += " DRAW"
-                }
-            } else {
-                description = "Go to move #" + moveOrder
-            }
-        } else {
-            description = "Go to game start"
-        }
-        return (
-            <li key={move}>
-                <button onClick={() => jumpTo(moveOrder)}>{description}</button>
-            </li>
-        )
-    })
-
     return (
         <div className="game">
             <div className="game-board">
@@ -65,11 +38,17 @@ const App = () => {
                 />
             </div>
             <div className="game-info">
-                <button onClick={toggleSortOrder}>
-                    Toggle Sorting Order:{" "}
-                    {sortAscending ? "Ascending" : "Descending"}
-                </button>
-                <ol>{Moves}</ol>
+                <ToggleSortButton
+                    toggleSortOrder={toggleSortOrder}
+                    sortAscending={sortAscending}
+                />
+                <Moves
+                    sortedHistory={sortedHistory}
+                    xIsNext={xIsNext}
+                    jumpTo={jumpTo}
+                    lastMove={lastMove}
+                    sortAscending={sortAscending}
+                />
             </div>
         </div>
     )
